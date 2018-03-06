@@ -1,47 +1,40 @@
 var growing = true;
-var pic = document.getElementById("pic");
+var svg = document.getElementById("pic");
 var clearButt = document.getElementById("clear");
 var circleR = 0;
 
-var growId;
+var placeCircle = function(e){
+    c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    c.setAttribute("cx", e.offsetX);
+    c.setAttribute("cy", e.offsetY);
+    c.setAttribute("r", 15);
+    c.setAttribute("fill", "goldenrod");
+    c.addEventListener("click", changeColor, true);
+    svg.appendChild(c);
+}
 
-var growCircle = function(e){
-    var c1 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-
-    c1.setAttribute("cx", 150);
-    c1.setAttribute("cy", 200);
-    c1.setAttribute("r", circleR);
-    pic.appendChild(c1);
-    
-    if(growing == true){
-	circleR += 1;
-	if(circleR >= 150){
-	    growing = false;
-	}
+var changeColor = function(e){
+    if(this.getAttribute("fill") == "goldenrod"){
+	this.setAttribute("fill", "lightsteelblue");
+	e.stopPropagation();
     }
     else{
-	circleR -= 1;
-	if(circleR <= 0){
-	    growing = true;
-	}
+	svg.removeChild(this);
+	e.stopPropagation();
+	c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+	c.setAttribute("cx", Math.floor(Math.random()*285 + 8));
+	c.setAttribute("cy", Math.floor(Math.random()*385 + 8));
+	c.setAttribute("r", 15);
+	c.setAttribute("fill", "goldenrod");
+	c.addEventListener("click", changeColor, true);
+	svg.appendChild(c);
     }
-
-    pic.removeChild(pic.childNodes[0]);
 }
 
-var growWrap = function(e){
-    rectX = 150;
-    rectY = 200;
-    growId = setInterval(growCircle, 25);
-}
-
-pic.addEventListener("click", growWrap);
+svg.addEventListener("click", placeCircle);
 
 var clearFxn = function(e){
-    clearInterval(growId);
-    while(pic.childNodes[0] != null){
-	pic.removeChild(pic.childNodes[0]);
-    }
+    pic.innerHTML = "";
 }
 
 clearButt.addEventListener("click", clearFxn);
